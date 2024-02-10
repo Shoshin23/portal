@@ -4,11 +4,11 @@ import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 
-export default function WebXR() {
+export default function WebXR(props) {
   const canvasRef = useRef(null);
 
   useEffect(() => {
-    let camera, scene, renderer, sphere, spheresmall, clock;
+    let camera, scene, renderer, sphere, clock;
 
     init();
     animate();
@@ -36,14 +36,14 @@ export default function WebXR() {
         const manager = new THREE.LoadingManager();
         const loader = new THREE.TextureLoader( manager );
 
-        loader.load( '/env3.jpg', function ( texture ) {
+        loader.load( props.image, function ( texture ) {
             texture.colorSpace = THREE.SRGBColorSpace;
             texture.minFilter = THREE.NearestFilter;
             texture.generateMipmaps = false;
             sphere.material.map = texture;
         } );
 
-        loader.load( '/depth3.jpg', function ( depth ) {
+        loader.load( props.depthmap , function ( depth ) {
             depth.minFilter = THREE.NearestFilter;
             depth.generateMipmaps = false;
             sphere.material.displacementMap = depth;
@@ -89,7 +89,17 @@ export default function WebXR() {
         renderer.setAnimationLoop(null);
       }
     };
-  }, []);
+  }, [props.image]);
+
+//   useEffect(() => {
+//     loader.load( props.image, function ( texture ) {
+//                 texture.colorSpace = THREE.SRGBColorSpace;
+//                 texture.minFilter = THREE.NearestFilter;
+//                 texture.generateMipmaps = false;
+//                 sphere.material.map = texture;
+//                 sphere.material.needsUpdate = true; // Ensure material updates
+//             } );
+//   }, [props.image])
 
   return <canvas ref={canvasRef} />;
 }
