@@ -13,9 +13,9 @@ export const soundscape = async (userPrompt) => {
     "haoheliu/audio-ldm:b61392adecdd660326fc9cfc5398182437dbe5e97b5decfb36e1a36de68b5b95",
     {
       input: {
-        text: userPrompt,
-        duration: "5.0",
-        n_candidates: 3,
+        text: `${userPrompt}, looping ambient`,
+        duration: "15.0",
+        n_candidates: 1,
         guidance_scale: 2.5
       }
     }

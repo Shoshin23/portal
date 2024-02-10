@@ -4,7 +4,7 @@ import { OpenAI } from 'openai';
 
 export const dalle = async (userPrompt) => {
 
-  const openai = new OpenAI({ apiKey: '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' });
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const prompt = "equirectangular insta 360 degrees image super detailed and layered with the subject: " + userPrompt;
 
     // Make the API request to generate the image

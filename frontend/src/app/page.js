@@ -11,7 +11,9 @@ export default function Home() {
   const [isListening, setIsListening] = useState(false);
   const recognitionRef = useRef(null);
   const timeoutRef = useRef(null);
-  const [image, setImage] = useState('/env3.jpg');
+  const [image, setImage] = useState();
+  const [depth, setDepth] = useState();
+  const [sound, setSound] = useState();
   const xrViewRef = useRef(null);
   
   // useEffect(() => {
@@ -52,15 +54,24 @@ export default function Home() {
 
   const fetchData = async (prompt, view) => {
     try {
-      const response = await fetch('/api/genworld', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ prompt: prompt }),
-      });
-      const jsonData = await response.json();
-      setImage(jsonData.imageUrl);
+      // const response = await fetch('/api/genworld', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify({ prompt: prompt }),
+      // });
+      // const jsonData = await response.json();
+
+      // console.log(jsonData);
+
+      // setImage(jsonData.imageUrl);
+      // setDepth(jsonData.depthMap);
+      // setSound(jsonData.sound);
+
+      setImage("./championsimg.png");
+      setDepth("./championsdepth.png");
+      setSound("./champions.wav");
 
       setView('xr');
 
@@ -117,7 +128,7 @@ export default function Home() {
 
   switch (view) {
     case 'xr':
-      return <WebXR image={image} depthmap='/depth3.jpg' ref={xrViewRef} />;
+      return <WebXR image={image} depthmap={depth} sound={sound} ref={xrViewRef} />;
     case 'landing':
       return(
         <div className="flex flex-col h-screen">

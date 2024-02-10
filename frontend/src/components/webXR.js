@@ -47,9 +47,36 @@ export default function WebXR(props) {
             depth.minFilter = THREE.NearestFilter;
             depth.generateMipmaps = false;
             sphere.material.displacementMap = depth;
-            sphere.material.displacementScale = 4	; // Adjust this value as needed
+            sphere.material.displacementScale = 8	; // Adjust this value as needed
         } );
 
+        const audioContext = new AudioContext();
+
+        // Function to fetch and decode the audio file
+        async function fetchAndDecodeAudio(url) {
+          const response = await fetch(url);
+          const arrayBuffer = await response.arrayBuffer();
+          const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+          return audioBuffer;
+        }
+
+        // Function to play the audio buffer on loop
+        async function playAudioLoop(url) {
+          try {
+            const audioBuffer = await fetchAndDecodeAudio(url);
+            const source = audioContext.createBufferSource();
+            source.buffer = audioBuffer;
+            source.loop = true;
+            source.connect(audioContext.destination);
+            source.start();
+          } catch (error) {
+            console.error('Error playing audio:', error);
+          }
+        } 
+
+        // Call the function to play the audio file on loop
+        playAudioLoop(props.sound);
+      
         manager.onLoad = function () {
             scene.add( sphere );
         };
@@ -62,6 +89,7 @@ export default function WebXR(props) {
         document.body.appendChild( VRButton.createButton( renderer ) );
         window.addEventListener( 'resize', onWindowResize );
     }
+    
 
     function onWindowResize() {
         camera.aspect = window.innerWidth / window.innerHeight;
@@ -89,7 +117,7 @@ export default function WebXR(props) {
         renderer.setAnimationLoop(null);
       }
     };
-  }, [props.image]);
+  }, [props.image, props.depthmap]);
 
 //   useEffect(() => {
 //     loader.load( props.image, function ( texture ) {
