@@ -1,4 +1,7 @@
 import { upScale } from "./upscale";
+import { depth } from "./depth";
+import { stitch } from "./stitch";
+
 
 const REPLICATE_API_TOKEN = "r8_3DUVTLC4hSChEzhGQ5F4gwjX3iLv1zM1SsSme";
 
@@ -68,8 +71,9 @@ export async function POST(request) {
         const responseData = await response.json();
 
         const imageUrl = await pollGeneration(responseData.urls.get);
-
-        const upscaledImageUrl = await upScale(imageUrl[0]);
+        //const imageUrl = 'https://remoteteambuilding.nl/env.jpg';
+        console.log(imageUrl);
+        const upscaledImageUrl = await stitch(imageUrl);
 
         return new Response(JSON.stringify({ message: 'success', imageUrl: upscaledImageUrl }), { status: 200, headers: { 'Content-Type': 'application/json' } });
     } catch (error) {
