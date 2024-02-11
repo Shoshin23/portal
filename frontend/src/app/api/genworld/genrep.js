@@ -1,10 +1,9 @@
-const REPLICATE_API_TOKEN = "r8_3DUVTLC4hSChEzhGQ5F4gwjX3iLv1zM1SsSme";
 
 
 import Replicate from "replicate";
 
 const replicate = new Replicate({
-  auth: REPLICATE_API_TOKEN,
+  auth: process.env.REPLICATE_API_TOKEN,
 });
 
 const pollGeneration = async (url) => {
@@ -14,7 +13,7 @@ const pollGeneration = async (url) => {
           const response = await fetch(url, {
             method: 'GET',
             headers: {
-              'Authorization': `Token ${REPLICATE_API_TOKEN}`
+              'Authorization': `Token ${process.env.REPLICATE_API_TOKEN}`
             }
           });
 
@@ -56,7 +55,7 @@ export const genrep = async (prompt) => {
   const response = await fetch("https://api.replicate.com/v1/predictions", {
       method: "POST",
       headers: {
-          "Authorization": `Token ${REPLICATE_API_TOKEN}`,
+          "Authorization": `Token ${process.env.REPLICATE_API_TOKEN}`,
           "Content-Type": "application/json"
       },
       body: JSON.stringify(postData)

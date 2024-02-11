@@ -1,47 +1,6 @@
-const REPLICATE_API_TOKEN = "r8_3DUVTLC4hSChEzhGQ5F4gwjX3iLv1zM1SsSme";
 
 import Replicate from "replicate";
 
-async function imageUrlToBase64(imageUrl) {
-  try {
-      // Fetch the image as a binary buffer
-      const response = await fetch(imageUrl);
-      const buffer = await response.arrayBuffer();
-
-      // Convert the binary buffer to base64
-      const base64String = Buffer.from(buffer).toString('base64');
-      return base64String;
-  } catch (error) {
-      console.error('An error occurred:', error.message);
-      return null;
-  }
-}
-
-const pollGeneration = async (url) => {
-    var status = '';
-    while (status !== 'succeeded' || status !== 'failed') {
-      try {
-          const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-              'Authorization': `Token ${REPLICATE_API_TOKEN}`
-            }
-          });
-
-          const data = await response.json();
-          status = data.status;
-
-          if(status === 'succeeded'){
-            const imageUrl = data.output;
-            return imageUrl
-          }
-      } catch (error) {
-          console.error('Error fetching data:', error);
-      }
-      console.log('polling upscale');
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Wait for 1 second
-  }
-}
 
 export const upScale = async (imageUrl) => {
   const img_response = await fetch(imageUrl);

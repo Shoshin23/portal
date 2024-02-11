@@ -1,10 +1,9 @@
-const REPLICATE_API_TOKEN = "r8_3DUVTLC4hSChEzhGQ5F4gwjX3iLv1zM1SsSme";
 
 
 import Replicate from "replicate";
 
 const replicate = new Replicate({
-  auth: REPLICATE_API_TOKEN,
+  auth: process.env.REPLICATE_API_TOKEN,
 });
 
 export const soundscape = async (userPrompt) => {

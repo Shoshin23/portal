@@ -1,11 +1,8 @@
-const REPLICATE_API_TOKEN = "r8_3DUVTLC4hSChEzhGQ5F4gwjX3iLv1zM1SsSme";
-
-
 import Replicate from "replicate";
 import { createCanvas, loadImage } from 'canvas';
 
 const replicate = new Replicate({
-  auth: REPLICATE_API_TOKEN,
+  auth: process.env.REPLICATE_API_TOKEN,
 });
 
 export const stitch = async (imageUrl) => {
@@ -57,28 +54,3 @@ async function flipLeftRight(imageUrl) {
     throw error;
   }
 }
-
-async function uploadToFileIO(imageBuffer) {
-  try {
-    // Prepare the request to upload image to File.io
-    const formData = new FormData();
-    formData.append('file', new Blob([imageBuffer], { type: 'image/png' }), 'image.png');
-
-    const response = await fetch('https://file.io/?expires=1w', {
-      method: 'POST',
-      body: formData
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to upload image to File.io');
-    }
-
-    const data = await response.json();
-    return data.link;
-  } catch (error) {
-    console.error('An error occurred while uploading to File.io:', error);
-    throw error;
-  }
-}
-
-// Example usage
