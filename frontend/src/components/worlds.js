@@ -43,11 +43,10 @@ export default function Worlds() {
 
   return (
     <section className="w-full py-12 lg:py-24">
-      <div className="container px-4 grid items-center justify-center gap-4 text-center md:px-6 lg:gap-10">
+      <div className=" px-4 grid items-center justify-center gap-4 text-center md:px-6 lg:gap-10">
         <div className="space-y-3">
-          <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Watch Live Demos</h2>
           <p className="mx-auto max-w-[600px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
-            Tune in to watch our live video demos. Ask questions and get answers in real-time.
+            Explore already created worlds.
           </p>
         </div>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -55,7 +54,7 @@ export default function Worlds() {
             <div key={world.id} className="flex flex-col items-stretch gap-2">
               <Link
                 className="aspect-[16/9] overflow-hidden rounded-lg object-cover object-center border border-gray-200 border-gray-200 shadow-sm hover:shadow transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950"
-                href="#"
+                href={`/scapes?scapeId=${world.id}`}
               >
                 <img
                   alt="Thumbnail"

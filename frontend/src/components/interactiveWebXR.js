@@ -1,14 +1,79 @@
 'use client'
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 
 export default function InteractiveWebXR(props) {
   const canvasRef = useRef(null);
-
   const planets = props.planets;
-  console.log(planets);
+  const [isListening, setIsListening] = useState(false);
+  const recognitionRef = useRef(null);
+  const timeoutRef = useRef(null);
+  
+  const fetchData = async (prompt, view) => {
+    try {
+      const response = await fetch('/api/genworld', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ prompt: prompt }),
+      });
+      const jsonData = await response.json();
+
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  const startListening = () => {
+    setIsListening(true);
+    const listenSound = new Audio('/listen.mp3')
+    listenSound.play();
+    const recognition = new window.webkitSpeechRecognition();
+    recognitionRef.current = recognition;
+
+    recognition.onstart = () => {
+      console.log('Speech recognition started');
+    };
+
+    recognition.onresult = (event) => {
+      const successSound = new Audio('/success.mp3');
+      successSound.play();
+      clearTimeout(timeoutRef.current);
+      const transcript = event.results[0][0].transcript;
+      setTranscription(transcript);
+      timeoutRef.current = setTimeout(() => {
+        stopListening();
+      }, 2000); // Adjust this value as needed
+      fetchData(transcript);
+    };
+
+    recognition.onerror = (event) => {
+      console.error('Speech recognition error:', event.error);
+      const errorSound = new Audio('/fail.mp3');
+      errorSound.play();
+      stopListening();
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+      console.log('Speech recognition ended');
+    };
+
+    recognition.start();
+  };
+
+  const stopListening = () => {
+    setIsListening(false);
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+    }
+    clearTimeout(timeoutRef.current);
+  };
+
+
 
   useEffect(() => {
     let camera, scene, renderer, raycaster, intersectedSphere, gazeStartTime, gazeDurationThreshold, currentPlanet, originalPosition, particles;
@@ -166,16 +231,23 @@ function updateRaycaster(event) {
 
     function handleIntersection() {
         if (intersectedSphere) {
+if(isListening){
+    return;
+}
             if(intersectedSphere.name==currentPlanet&&currentPlanet!=-1){
                 return
             }
+
             console.log(intersectedSphere.name)
             
             const currentTime = performance.now();
+
             if (!gazeStartTime) {
                 gazeStartTime = currentTime;
             }
+
             const gazeDuration = currentTime - gazeStartTime;
+
             if (gazeDuration >= gazeDurationThreshold) {
                 gazeStartTime=undefined;
                 if(intersectedSphere.name!='-1'){
@@ -204,18 +276,20 @@ function updateRaycaster(event) {
 
                 console.log('de groene')
 
-if(currentPlanet!="-1"){
-
-            findSphereByName(currentPlanet).position.set(originalPosition[0],originalPosition[1],originalPosition[2])
+            if(currentPlanet!="-1"){
+                findSphereByName(currentPlanet).position.set(originalPosition[0],originalPosition[1],originalPosition[2])
                 findSphereByName(currentPlanet).scale.set(1,1,1)
 
                 currentPlanet='-1';
-            }else{
-                //START RECORDING!
-                //laat zien dat ie inlaadt, 
-                //ververs de planeten als ie klaar is
+            } else {
+                if(!isListening){
+                    console.log("NOW START LISTENING");
+                    setIsListening(true);
+                    gazeStartTime=undefined;    
+                }
             }
-spheres.forEach(sphere => {
+
+            spheres.forEach(sphere => {
                     sphere.visible = true;
                 sphere.scale.set(1,1,1);
 

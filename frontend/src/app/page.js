@@ -3,6 +3,9 @@
 import MicIcon from "@/components/micicon"
 import {useState, useRef} from 'react';
 import { useRouter } from 'next/navigation'
+import Worlds from "@/components/worlds";
+import Link from 'next/link'
+import GlobeIcon from "@/components/globeicon";
 // import annyang from 'annyang';
 
 export default function Home() {
@@ -81,20 +84,39 @@ export default function Home() {
         <div className="flex flex-col h-screen">
         <header className="flex items-center justify-center w-full py-4">
           <div className="container flex flex-col items-center gap-2 px-4 text-center md:gap-4 md:px-6">
-            <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl">
+          <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Somnium</h2>
+            <h1 className="text-2xl tracking-tighter sm:text-4xl">
               Just say where you want to go, and we will take you
             </h1>
           </div>
         </header>
-        <main className="flex-1 flex items-center justify-center w-full">
-          <div className="grid items-center justify-center gap-4 px-4 text-center md:px-6">
-            <button onClick={isListening ? stopListening : startListening} size="lg" className={`border rounded-lg p-4 transition ease-in-out delay-50 hover:bg-slate-500 ${isListening ? 'bg-red-600' : ''}`} variant="outline">
-              <MicIcon className="h-6 w-6" />
-              Speak
-            </button>
+        <main className="flex flex-col justify-center w-full">
+          <div className="items-center w-full my-8">
+            <div className="grid items-center justify-center gap-4 px-4 text-center md:px-6">
+              <button onClick={isListening ? stopListening : startListening} size="xl" className={`items-center justify-center border rounded-xl p-4 transition ease-in-out delay-50 hover:bg-slate-500 ${isListening ? 'bg-red-600' : ''}`} variant="outline">
+                <MicIcon className="h-12 w-12" />
+              </button>
+            </div>
+            <div className="grid items-center justify-center gap-4 px-4 text-center md:px-6">
+              <p className="text-xl">{transcription}</p>
+            </div>
           </div>
-          <div className="grid items-center justify-center gap-4 px-4 text-center md:px-6">
-            <p className="text-xl">{transcription}</p>
+
+          <div className="items-center w-full my-8">
+            <div className="grid items-center justify-center gap-4 px-4 text-center md:px-6">
+            <Link className="items-center justify-center border rounded-xl p-4 transition ease-in-out delay-50 hover:bg-slate-500" href="interactivescapes">
+              <GlobeIcon className="h-12 w-12" />
+            </Link>
+            </div>
+            <div className="grid items-center justify-center gap-4 px-4 text-center md:px-6">
+              <p className="text-xl">{transcription}</p>
+            </div>
+          </div>
+
+
+
+          <div className="items-center  w-full">
+            <Worlds/>
           </div>
         </main>
         <footer className="flex items-center justify-center w-full py-4">
