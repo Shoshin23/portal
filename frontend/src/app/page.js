@@ -63,7 +63,7 @@ export default function Home() {
       });
       const jsonData = await response.json();
 
-      console.log(jsonData);
+     // console.log(jsonData);
 
       // setImage(jsonData.imageUrl);
       // setDepth(jsonData.depthMap);
