@@ -1,6 +1,33 @@
 
 import Replicate from "replicate";
 
+const pollGeneration = async (url) => {
+  var status = '';
+  while (status !== 'succeeded' || status !== 'failed') {
+    try {
+        const response = await fetch(url, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Token ${process.env.REPLICATE_KARTHIK_API_TOKEN}`
+          }
+        });
+
+        const data = await response.json();
+
+        status = data.status;
+
+        if(status === 'succeeded'){
+          const imageUrl = data.output;
+          return imageUrl[0]
+        }
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+    console.log('polling');
+    await new Promise(resolve => setTimeout(resolve, 1000)); // Wait for 1 second
+}
+}
+
 
 export const upScale = async (imageUrl) => {
   const img_response = await fetch(imageUrl);
@@ -12,12 +39,14 @@ export const upScale = async (imageUrl) => {
   const datauri = `data:image/png;base64,${base64Image}`;
 
   const replicate = new Replicate({
-    auth: process.env.REPLICATE_API_TOKEN,
+    auth: process.env.REPLICATE_KARTHIK_API_TOKEN,
   });
 
   console.log("Running upscale!")
-  const output = await replicate.run(
-    "batouresearch/high-resolution-controlnet-tile:4af11083a13ebb9bf97a88d7906ef21cf79d1f2e5fa9d87b70739ce6b8113d29",
+
+  const output = await replicate.deployments.predictions.create(
+    "shoshin23",
+    "upscaling",
     {
       input: {
         prompt: "",
@@ -26,5 +55,5 @@ export const upScale = async (imageUrl) => {
     }
   );
   
-  return output;
+  return await pollGeneration(output.urls.get);
 }

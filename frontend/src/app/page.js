@@ -65,13 +65,13 @@ export default function Home() {
 
      // console.log(jsonData);
 
-      // setImage(jsonData.imageUrl);
-      // setDepth(jsonData.depthMap);
-      // setSound(jsonData.sound);
+      setImage(jsonData.imageUrl);
+      setDepth(jsonData.depthMap);
+      setSound(jsonData.sound);
 
-      setImage("./championsimg.png");
-      setDepth("./championsdepth.png");
-      setSound("./champions.wav");
+      // setImage("./championsimg.png");
+      // setDepth("./championsdepth.png");
+      // setSound("./champions.wav");
 
       setView('xr');
 

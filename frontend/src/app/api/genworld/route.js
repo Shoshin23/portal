@@ -45,18 +45,18 @@ export async function POST(request) {
         // , "https://remoteteambuilding.nl/env.png"
         // );
         const requestData = await request.json();
-        const soundPromise = soundscape(requestData.prompt);
         const imageUrl = await dalle(requestData.prompt);
         //already show the three.js scene here and improve quality over time?
-        // const sound = await soundscape(requestData.prompt);
+        const sound = await soundscape(requestData.prompt);
         const stitchImage = await stitch(imageUrl);
         const upscaledImageUrl = await upScale(stitchImage);
         const depthMap = await depth(upscaledImageUrl);
-        const sound = await soundPromise;
-        
-        
-        await saveToFirestore(requestData.prompt, imageUrl,upscaledImageUrl, depthMap, soundPromise);
 
+        console.log(sound);
+        console.log(upscaledImageUrl);
+        console.log(depthMap);
+        
+        await saveToFirestore(requestData.prompt, imageUrl, upscaledImageUrl, depthMap, sound);
 
          return new Response(JSON.stringify({ message: 'success', imageUrl: upscaledImageUrl, depthMap: depthMap, sound: sound }), { status: 200, headers: { 'Content-Type': 'application/json' } });
     } catch (error) {
