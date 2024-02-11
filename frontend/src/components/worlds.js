@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { app } from '../firebase'; // Import your Firestore configuration
 import { getFirestore, doc, getDocs, collection } from "firebase/firestore";
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 export default function Worlds() {
   const [worlds, setWorlds] = useState([]);
@@ -12,20 +13,27 @@ export default function Worlds() {
   useEffect(() => {
     const fetchData = async () => {
       const firestore = getFirestore();
-      console.log("logging firestore");
-
+      const storage = getStorage(app); // Initialize Firebase Storage
+    
       const worldsCollection = collection(firestore, 'scapes');
-      console.log("world sollection");
-      console.log(worldsCollection);
-
       const worldsSnapshot = await getDocs(worldsCollection);
-      console.log(worldsSnapshot)
-
-      const worldsData = worldsSnapshot.docs.map(doc => ({
+    
+      let worldsData = worldsSnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       }));
-
+    
+      // Replace Google Storage links with download URLs
+      worldsData = await Promise.all(worldsData.map(async world => {
+        const imageRef = ref(storage, world.image); // Replace 'image' with the field name that contains the Google Storage link
+        const imageUrl = await getDownloadURL(imageRef);
+    
+        return {
+          ...world,
+          image: imageUrl
+        };
+      }));
+    
       setWorlds(worldsData);
       console.log(worldsData);
     };
@@ -52,7 +60,7 @@ export default function Worlds() {
                 <img
                   alt="Thumbnail"
                   height="180"
-                  src={world.thumbnail}
+                  src={world.image}
                   style={{
                     aspectRatio: "320/180",
                     objectFit: "cover",
