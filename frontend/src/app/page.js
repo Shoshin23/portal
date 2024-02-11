@@ -1,57 +1,17 @@
 'use client'
 
 import MicIcon from "@/components/micicon"
-import {useState, useEffect, useRef} from 'react';
+import {useState, useRef} from 'react';
+import { useRouter } from 'next/navigation'
 // import annyang from 'annyang';
-import WebXR from "@/components/webXR";
 
 export default function Home() {
-  const [view, setView] = useState('landing');
   const [transcription, setTranscription] = useState('');
   const [isListening, setIsListening] = useState(false);
   const recognitionRef = useRef(null);
   const timeoutRef = useRef(null);
-  const [image, setImage] = useState();
-  const [depth, setDepth] = useState();
-  const [sound, setSound] = useState();
-  const xrViewRef = useRef(null);
+  const router = useRouter()
   
-  // useEffect(() => {
-  //   if (annyang) {
-  //     annyang.addCommands({
-  //       'Hey Vision': () => {
-  //         startListening();
-  //       }
-  //     });
-  //     annyang.start();
-  //     return () => {
-  //       annyang.removeCommands();
-  //       annyang.abort();
-  //     };
-  //   } else {
-  //     alert("Cannot find annyang!");
-  //   }
-  // }, []);
-
-  // const startListening = () => {
-  //   const listenSound = new Audio('/listen.mp3')
-  //   listenSound.play();
-  //   setIsListening(true);
-  //   annyang.addCallback('result', function(phrases) {
-  //   const successSound = new Audio('/success.mp3');
-  //     successSound.play();
-  //     setTranscription(phrases[0]);
-  //     console.log(phrases[0]);
-  //     stopListening();
-  //     fetchData(phrases[0], view);
-  //   });
-  // };
-
-  // const stopListening = () => {
-  //   setIsListening(false);
-  //   annyang.removeCallback('result');
-  // };
-
   const fetchData = async (prompt, view) => {
     try {
       const response = await fetch('/api/genworld', {
@@ -63,17 +23,8 @@ export default function Home() {
       });
       const jsonData = await response.json();
 
-     // console.log(jsonData);
-
-      setImage(jsonData.imageUrl);
-      setDepth(jsonData.depthMap);
-      setSound(jsonData.sound);
-
-      // setImage("./championsimg.png");
-      // setDepth("./championsdepth.png");
-      // setSound("./champions.wav");
-
-      setView('xr');
+     // console.log(jsonData); 
+      router.push(`/scapes?scapeId=${jsonData.scapeId}`, { scroll: false })
 
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -126,10 +77,6 @@ export default function Home() {
     clearTimeout(timeoutRef.current);
   };
 
-  switch (view) {
-    case 'xr':
-      return <WebXR image={image} depthmap={depth} sound={sound} ref={xrViewRef} />;
-    case 'landing':
       return(
         <div className="flex flex-col h-screen">
         <header className="flex items-center justify-center w-full py-4">
@@ -157,7 +104,6 @@ export default function Home() {
         </footer>
       </div>
       );
-    }
 }
 
 

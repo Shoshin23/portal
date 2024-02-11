@@ -58,7 +58,10 @@ export async function POST(request) {
         
         await saveToFirestore(requestData.prompt, imageUrl, upscaledImageUrl, depthMap, sound);
 
-         return new Response(JSON.stringify({ message: 'success', imageUrl: upscaledImageUrl, depthMap: depthMap, sound: sound }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+        // TODO: return firestore id
+        const scapeId = 'T18rP99jFih5EWmsGnfi';
+
+         return new Response(JSON.stringify({ message: 'success', scapeId: scapeId }), { status: 200, headers: { 'Content-Type': 'application/json' } });
     } catch (error) {
         console.error('Error processing request:', error);
         return new Response(JSON.stringify({ message: 'error', error: error.message }), { status: 500, headers: { 'Content-Type': 'application/json' } });
