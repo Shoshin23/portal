@@ -39,20 +39,24 @@ async function downloadAndUploadFile(url, destination) {
 export async function POST(request) {
    
     try {
-        await saveToFirestore("underwater alien world", "https://remoteteambuilding.nl/env.png"
-        , "https://remoteteambuilding.nl/env.png"
-        , "https://remoteteambuilding.nl/env.png"
-        , "https://remoteteambuilding.nl/env.png"
-        );
-        // const requestData = await request.json();
-        // const imageUrl = await dalle(requestData.prompt);
-        // //already show the three.js scene here and improve quality over time?
+        // await saveToFirestore("underwater alien world", "https://remoteteambuilding.nl/env.png"
+        // , "https://remoteteambuilding.nl/env.png"
+        // , "https://remoteteambuilding.nl/env.png"
+        // , "https://remoteteambuilding.nl/env.png"
+        // );
+        const requestData = await request.json();
+        const soundPromise = soundscape(requestData.prompt);
+        const imageUrl = await dalle(requestData.prompt);
+        //already show the three.js scene here and improve quality over time?
         // const sound = await soundscape(requestData.prompt);
-        // const stitchImage = await stitch(imageUrl);
-        // const upscaledImageUrl = await upScale(stitchImage);
-        // const depthMap = await depth(upscaledImageUrl);
+        const stitchImage = await stitch(imageUrl);
+        const upscaledImageUrl = await upScale(stitchImage);
+        const depthMap = await depth(upscaledImageUrl);
+        const sound = await soundPromise;
         
-        // await saveToFirestore(requestData.prompt, imageUrl,upscaledImageUrl, depthMap, sound);
+        
+        await saveToFirestore(requestData.prompt, imageUrl,upscaledImageUrl, depthMap, soundPromise);
+
 
          return new Response(JSON.stringify({ message: 'success', imageUrl: upscaledImageUrl, depthMap: depthMap, sound: sound }), { status: 200, headers: { 'Content-Type': 'application/json' } });
     } catch (error) {
@@ -61,7 +65,7 @@ export async function POST(request) {
     }
 }
 
-async function saveToFirestore(prompt, initialImageUrl, imageUrl, depthMap, sound) {
+async function saveToFirestore(prompt, initialImageUrl, imageUrl, depthMap, soundPromise) {
 
     const pipeline = util.promisify(stream.pipeline);
     const timestamp = admin.firestore.Timestamp.now().toDate().toISOString();
@@ -76,7 +80,10 @@ async function saveToFirestore(prompt, initialImageUrl, imageUrl, depthMap, soun
     const initialImageURL = await downloadAndUploadFile(initialImageUrl, `${filePrefix}_initial.png`);
     const imageURL = await downloadAndUploadFile(imageUrl, `${filePrefix}_image.png`);
     const depthMapURL = await downloadAndUploadFile(depthMap, `${filePrefix}_depth.png`);
+
+    const sound = await soundPromise;
     const soundURL = await downloadAndUploadFile(sound, `${filePrefix}_sound.wav`);
+    // const soundURL = await downloadAndUploadFile(sound, `${filePrefix}_sound.wav`);
 
     await db.collection('scapes').add({
         prompt: prompt,
