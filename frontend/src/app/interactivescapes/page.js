@@ -7,17 +7,17 @@ import InteractiveWebXR from '@/components/interactiveWebXR';
 
 export default function InteractiveScapes() {
     const [planets, setPlanets] = useState([
-        {id:1, image:'https://remoteteambuilding.nl/env.jpg', depth:'https://remoteteambuilding.nl/env.jpg'},
-        {id:2, image:'https://remoteteambuilding.nl/env3.jpg', depth:'https://remoteteambuilding.nl/env3.jpg'},
-        {id:3, image:'https://remoteteambuilding.nl/depth.jpg', depth:'https://remoteteambuilding.nl/depth.jpg'}
+        {id:1, image:'./env.jpg', depth:'./env.jpg'},
+        {id:2, image:'./env.png', depth:'./env.png'},
+        {id:3, image:'./depth2.jpg', depth:'./depth2.jpg'}
     ]);
 
     useEffect(() => {
         // TODO: Get all of the scapes from firebase
         const planetsPlaceholder = [
-            {id:1, image:'https://remoteteambuilding.nl/env.jpg', depth:'https://remoteteambuilding.nl/env.jpg'},
-            {id:2, image:'https://remoteteambuilding.nl/env3.jpg', depth:'https://remoteteambuilding.nl/env3.jpg'},
-            {id:3, image:'https://remoteteambuilding.nl/depth.jpg', depth:'https://remoteteambuilding.nl/depth.jpg'}
+            {id:1, image:'./env.jpg', depth:'./env.jpg'},
+            {id:2, image:'./env.png', depth:'./env.png'},
+            {id:3, image:'./depth2.jpg', depth:'./depth2.jpg'}
         ];
 
         setPlanets(planetsPlaceholder);
