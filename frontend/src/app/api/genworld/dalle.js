@@ -5,7 +5,7 @@ import { OpenAI } from 'openai';
 export const dalle = async (userPrompt) => {
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-const prompt = "equirectangular insta 360 degrees image super detailed and layered with the subject: " + userPrompt;
+const prompt = "textless insta 360 degrees image super detailed and layered with the subject: " + userPrompt + "IMPORTANT:equirectangular";
 
     // Make the API request to generate the image
     const response = await openai.images.generate({

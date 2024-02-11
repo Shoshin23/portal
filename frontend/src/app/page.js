@@ -54,16 +54,16 @@ export default function Home() {
 
   const fetchData = async (prompt, view) => {
     try {
-      // const response = await fetch('/api/genworld', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify({ prompt: prompt }),
-      // });
-      // const jsonData = await response.json();
+      const response = await fetch('/api/genworld', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ prompt: prompt }),
+      });
+      const jsonData = await response.json();
 
-      // console.log(jsonData);
+      console.log(jsonData);
 
       // setImage(jsonData.imageUrl);
       // setDepth(jsonData.depthMap);
