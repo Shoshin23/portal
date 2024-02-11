@@ -7,11 +7,7 @@ import { app } from "../../firebase";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 export default function InteractiveScapes() {
-    const [planets, setPlanets] = useState([
-        {id:1, image:'./env.jpg', depth:'./env.jpg'},
-        {id:2, image:'./env.png', depth:'./env.png'},
-        {id:3, image:'./depth2.jpg', depth:'./depth2.jpg'}
-    ]);
+    const [planets, setPlanets] = useState();
     
 
     

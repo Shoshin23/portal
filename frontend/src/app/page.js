@@ -2,7 +2,6 @@
 
 import MicIcon from "@/components/micicon"
 import {useState, useRef} from 'react';
-import { useRouter } from 'next/navigation'
 import Worlds from "@/components/worlds";
 import Link from 'next/link'
 import GlobeIcon from "@/components/globeicon";
@@ -13,8 +12,7 @@ export default function Home() {
   const [isListening, setIsListening] = useState(false);
   const recognitionRef = useRef(null);
   const timeoutRef = useRef(null);
-  const router = useRouter()
-  
+
   const fetchData = async (prompt, view) => {
     try {
       const response = await fetch('/api/genworld', {
@@ -24,6 +22,7 @@ export default function Home() {
         },
         body: JSON.stringify({ prompt: prompt }),
       });
+
       const jsonData = await response.json();
 
     } catch (error) {
@@ -104,9 +103,6 @@ export default function Home() {
               <Link className="items-center justify-center border rounded-xl p-4 transition ease-in-out delay-50 hover:bg-slate-500" href="interactivescapes">
                 <GlobeIcon className="h-12 w-12" />
               </Link>
-            </div>
-            <div className="grid items-center justify-center gap-4 px-4 text-center md:px-6">
-              <p className="text-xl">{transcription}</p>
             </div>
           </div>
 

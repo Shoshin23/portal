@@ -51,11 +51,11 @@ export default function Worlds() {
         </div>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {worlds.map(world => (
-            <div key={world.id} className="flex flex-col items-stretch gap-2">
-              <Link
-                className="aspect-[16/9] overflow-hidden rounded-lg object-cover object-center border border-gray-200 border-gray-200 shadow-sm hover:shadow transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950"
-                href={`/scapes?scapeId=${world.id}`}
-              >
+            <div key={world.id} className="relative flex flex-col items-stretch gap-2">
+                <Link
+                  className="aspect-[16/9] overflow-hidden rounded-lg object-cover object-center border border-gray-200 border-gray-200 shadow-sm hover:shadow transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950"
+                  href={`/scapes?scapeId=${world.id}`}
+                >
                 <img
                   alt="Thumbnail"
                   height="180"
@@ -66,9 +66,6 @@ export default function Worlds() {
                   }}
                   width="320"
                 />
-                <div className="absolute inset-0 flex items-center justify-center gap-2">
-                  <div className="w-10 h-10 text-gray-500 hover:text-gray-900 transition-colors dark:text-gray-400 dark:hover:text-gray-300" />
-                </div>
               </Link>
               <h3 className="text-lg font-bold">{world.title}</h3>
             </div>
