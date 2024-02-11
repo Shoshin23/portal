@@ -4,19 +4,36 @@ import { depth } from "./depth";
 import { dalle } from "./dalle";
 import { stitch } from "./stitch";
 import { soundscape } from "./sound";
+import fs from 'fs';
+import stream from 'stream';
+import util from 'util';
 
 
 const serviceAccount = require("../../../../somnium-1d497-firebase-adminsdk-280ot-655a36a8ce.json");
 
+if (!admin.apps.length) {
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
     storageBucket: 'gs://somnium-1d497.appspot.com'
 
 });
+}
 
 const db = admin.firestore();
 const storage = admin.storage();
 const storageRef = storage.bucket();
+
+async function downloadAndUploadFile(url, destination) {
+    const pipeline = util.promisify(stream.pipeline);
+    const response = await fetch(url);
+    const tempFilePath = `/tmp/${Math.random().toString(36).substring(7)}`;
+    const fileStream = fs.createWriteStream(tempFilePath);
+    await pipeline(response.body, fileStream);
+    await storageRef.upload(tempFilePath, { destination });
+    console.log(`Upload of ${destination} successful.`);
+    fs.unlinkSync(tempFilePath); // delete the temp file
+    return `gs://${storageRef.name}/${destination}`;
+}
 
 
 export async function POST(request) {
@@ -45,21 +62,21 @@ export async function POST(request) {
 }
 
 async function saveToFirestore(prompt, initialImageUrl, imageUrl, depthMap, sound) {
-    
-    const timestamp = admin.firestore.Timestamp.now();
-    const filePrefix = `${timestamp}`; // Prefix for the file names
-    
-    const initialImageUpload = storageRef.upload(initialImageUrl, { destination: `${filePrefix}_initial.png` });
-    const imageUpload = storageRef.upload(imageUrl, { destination: `${filePrefix}_image.png` });
-    const depthMapUpload = storageRef.upload(depthMap, { destination: `${filePrefix}_depth.png` });
-    const soundUpload = storageRef.upload(sound, { destination: `${filePrefix}_sound.wav` });
 
-    await Promise.all([initialImageUpload, imageUpload, depthMapUpload, soundUpload]);
+    const pipeline = util.promisify(stream.pipeline);
+    const timestamp = admin.firestore.Timestamp.now().toDate().toISOString();
+    const filePrefix = `env_${timestamp}`; // Prefix for the file names
 
-    const initialImageURL = `gs://${storageRef.name}/${filePrefix}_initial.png`;
-    const imageURL = `gs://${storageRef.name}/${filePrefix}_image.png`;
-    const depthMapURL = `gs://${storageRef.name}/${filePrefix}_depth.png`;
-    const soundURL = `gs://${storageRef.name}/${filePrefix}_sound.wav`;
+    // Download the image and save it to a local file
+    const response = await fetch(initialImageUrl);
+    const fileStream = fs.createWriteStream('env.png');
+    await pipeline(response.body, fileStream);
+
+    // Upload the local file to Firebase Storage
+    const initialImageURL = await downloadAndUploadFile(initialImageUrl, `${filePrefix}_initial.png`);
+    const imageURL = await downloadAndUploadFile(imageUrl, `${filePrefix}_image.png`);
+    const depthMapURL = await downloadAndUploadFile(depthMap, `${filePrefix}_depth.png`);
+    const soundURL = await downloadAndUploadFile(sound, `${filePrefix}_sound.wav`);
 
     await db.collection('scapes').add({
         prompt: prompt,
