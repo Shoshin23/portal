@@ -119,15 +119,5 @@ export default function WebXR(props) {
     };
   }, [props.image, props.depthmap]);
 
-//   useEffect(() => {
-//     loader.load( props.image, function ( texture ) {
-//                 texture.colorSpace = THREE.SRGBColorSpace;
-//                 texture.minFilter = THREE.NearestFilter;
-//                 texture.generateMipmaps = false;
-//                 sphere.material.map = texture;
-//                 sphere.material.needsUpdate = true; // Ensure material updates
-//             } );
-//   }, [props.image])
-
   return <canvas ref={canvasRef} />;
 }
