@@ -26,9 +26,6 @@ export default function Home() {
       });
       const jsonData = await response.json();
 
-     // console.log(jsonData); 
-      router.push(`/scapes?scapeId=${jsonData.scapeId}`, { scroll: false })
-
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -104,9 +101,9 @@ export default function Home() {
 
           <div className="items-center w-full my-8">
             <div className="grid items-center justify-center gap-4 px-4 text-center md:px-6">
-            <Link className="items-center justify-center border rounded-xl p-4 transition ease-in-out delay-50 hover:bg-slate-500" href="interactivescapes">
-              <GlobeIcon className="h-12 w-12" />
-            </Link>
+              <Link className="items-center justify-center border rounded-xl p-4 transition ease-in-out delay-50 hover:bg-slate-500" href="interactivescapes">
+                <GlobeIcon className="h-12 w-12" />
+              </Link>
             </div>
             <div className="grid items-center justify-center gap-4 px-4 text-center md:px-6">
               <p className="text-xl">{transcription}</p>
