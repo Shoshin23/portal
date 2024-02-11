@@ -9,8 +9,6 @@ import { getStorage, ref, getDownloadURL } from "firebase/storage";
 export default function InteractiveScapes() {
     const [planets, setPlanets] = useState();
     
-
-    
     useEffect(() => {
         const fetchData = async () => {
             const firestore = getFirestore();
@@ -54,7 +52,6 @@ export default function InteractiveScapes() {
             });
 
             setPlanets(planets);
-        
           };
 
           fetchData();

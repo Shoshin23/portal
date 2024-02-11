@@ -104,6 +104,8 @@ export default function InteractiveWebXR(props) {
             const x = Math.sin(theta) * radius;
             const y = 0; // Keep y-axis at 0 for even spacing
             const z = Math.cos(theta) * radius;
+
+            console.log(planet);
         
             // Load the planet texture
             loader.load(planet.image, function (texture) {
@@ -137,6 +139,20 @@ export default function InteractiveWebXR(props) {
                 });
             });
         });
+
+
+        // load music stuff
+          // Function to fetch and decode the audio file
+         
+  
+          // Function to play the audio buffer on loop
+          
+
+
+
+
+
+
         const greenSphereGeo = new THREE.SphereGeometry(0.5, 32, 32);
         const greenSphereMat = new  THREE.MeshStandardMaterial({
             color: 0xffd700,  
@@ -221,7 +237,26 @@ export default function InteractiveWebXR(props) {
         }
         return null; 
     }
+    const audioContext = new AudioContext();
 
+    async function fetchAndDecodeAudio(url) {
+        const response = await fetch(url);
+        const arrayBuffer = await response.arrayBuffer();
+        const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+        return audioBuffer;
+      }
+    async function playAudioLoop(url) {
+        try {
+          const audioBuffer = await fetchAndDecodeAudio(url);
+          const source = audioContext.createBufferSource();
+          source.buffer = audioBuffer;
+          source.loop = true;
+          source.connect(audioContext.destination);
+          source.start();
+        } catch (error) {
+          console.error('Error playing audio:', error);
+        }
+      } 
 function updateRaycaster(event) {
         var x = (event.clientX / window.innerWidth) * 2 - 1;
         var y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -238,7 +273,7 @@ if(isListening){
                 return
             }
 
-            console.log(intersectedSphere.name)
+            // console.log(intersectedSphere.name)
             
             const currentTime = performance.now();
 
@@ -252,8 +287,8 @@ if(isListening){
                 gazeStartTime=undefined;
                 if(intersectedSphere.name!='-1'){
                     if(intersectedSphere.name!=currentPlanet){
-                    console.log('planeet')
-                console.log("Sphere gazed at for 2 seconds:", intersectedSphere);
+                    // console.log('planeet')
+                // console.log("Sphere gazed at for 2 seconds:", intersectedSphere);
                 currentPlanet=intersectedSphere.name;
                 intersectedSphere.scale.set(6, 6, 6);
                 originalPosition=[intersectedSphere.position.x,intersectedSphere.position.y,intersectedSphere.position.z];
@@ -268,13 +303,18 @@ if(isListening){
                     }
                     }
                 });
+
+                // Run music
+                if(currentPlanet!='-1'){
+                playAudioLoop(planets.find(x=>x.id==currentPlanet).sound); // todo right planet
+                }
             }
             }else{
                 //reset
                 gazeStartTime=undefined;
 
 
-                console.log('de groene')
+                // console.log('de groene')
 
             if(currentPlanet!="-1"){
                 findSphereByName(currentPlanet).position.set(originalPosition[0],originalPosition[1],originalPosition[2])
@@ -283,7 +323,7 @@ if(isListening){
                 currentPlanet='-1';
             } else {
                 if(!isListening){
-                    console.log("NOW START LISTENING");
+                    // console.log("NOW START LISTENING");
                     setIsListening(true);
                     gazeStartTime=undefined;    
                 }
