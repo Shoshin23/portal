@@ -56,10 +56,11 @@ export async function POST(request) {
         console.log(upscaledImageUrl);
         console.log(depthMap);
         
-        await saveToFirestore(requestData.prompt, imageUrl, upscaledImageUrl, depthMap, sound);
+        const scapeId = await saveToFirestore(requestData.prompt, imageUrl, upscaledImageUrl, depthMap, sound);
+        console.log(scapeId);
 
         // TODO: return firestore id
-        const scapeId = 'T18rP99jFih5EWmsGnfi';
+        // const scapeId = 'T18rP99jFih5EWmsGnfi';
 
          return new Response(JSON.stringify({ message: 'success', scapeId: scapeId }), { status: 200, headers: { 'Content-Type': 'application/json' } });
     } catch (error) {
@@ -96,4 +97,6 @@ async function saveToFirestore(prompt, initialImageUrl, imageUrl, depthMap, soun
         sound: soundURL,
         time: timestamp
     });
+
+    return docRef.id;
 }

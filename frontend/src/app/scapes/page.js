@@ -3,6 +3,7 @@
 import { useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react';
 import WebXR from '@/components/webXR';
+import { getFirestore, doc, getDoc } from "firebase/firestore";
 
 export default function Scapes() {
     const [image, setImage] = useState();
@@ -16,13 +17,23 @@ export default function Scapes() {
     console.log(scapeId);
 
     useEffect(() => {
-        // TODO: Get all of the things from scapeId
-
-        // TODO: Remove this
-        setImage("./championsimg.png");
-        setDepth("./championsdepth.png");
-        setSound("./champions.wav");
-    }, []);
+        const fetchData = async () => {
+            const firestore = getFirestore();
+            const docRef = doc(firestore, 'scapes', scapeId);
+            const docSnap = await getDoc(docRef);
+    
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                setImage(data.image);
+                setDepth(data.depth);
+                setSound(data.sound);
+            } else {
+                console.log("No such document!");
+            }
+        };
+    
+        fetchData();
+    }, [scapeId]);
 
     return(
         <WebXR image={image} depthmap={depth} sound={sound} />

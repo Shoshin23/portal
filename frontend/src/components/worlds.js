@@ -3,31 +3,35 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { app } from '../firebase'; // Import your Firestore configuration
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, doc, getDocs, collection } from "firebase/firestore";
 
 export default function Worlds() {
   const [worlds, setWorlds] = useState([]);
+  
 
   useEffect(() => {
-    const fetchWorlds = async () => {
-      const firestore = getFirestore(app); // Initialize Firestore
+    const fetchData = async () => {
+      const firestore = getFirestore();
+      console.log("logging firestore");
 
-      console.log(firestore);
+      const worldsCollection = collection(firestore, 'scapes');
+      console.log("world sollection");
+      console.log(worldsCollection);
 
-      const worldsCollection = firestore.collection('scapes'); // Reference to your Firestore collection
+      const worldsSnapshot = await getDocs(worldsCollection);
+      console.log(worldsSnapshot)
 
-      try {
-        const snapshot = await worldsCollection.get(); // Retrieve data from Firestore
-        const worldsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        console.log(worldsData)
-        setWorlds(worldsData);
-      } catch (error) {
-        console.error('Error fetching worlds:', error);
-      }
+      const worldsData = worldsSnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+
+      setWorlds(worldsData);
+      console.log(worldsData);
     };
 
-    fetchWorlds();
-  }, []);
+    fetchData();
+  }, [])
 
   return (
     <section className="w-full py-12 lg:py-24">
